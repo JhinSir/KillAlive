@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.damon.kill.alive"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:name="com.damon.kill.alive.main.AliveApp"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.KillAlive"
+        tools:targetApi="31">
+        <activity
+            android:name=".main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+
+
+        <service
+            android:name=".service.DamonServices"
+            android:exported="true"
+            android:process=":damon">
+        </service>
+
+        <service
+            android:name=".service.MonitorService1"
+            android:exported="true"
+            android:process=":assist1" />
+
+        <service
+            android:name=".service.MonitorService2"
+            android:exported="true"
+            android:process=":assist2" />
+
+        <service
+            android:name=".service.NotifactionServices"
+            android:process=":resident" />
+
+        <service
+            android:name=".service.KeepAliveService"
+            android:process="android.process.daemon.realshort" />
+
+        <receiver
+            android:name=".receiver.DamonReceiver"
+            android:exported="true" />
+
+        <receiver android:name=".receiver.BootChangeReceiver"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_TICK" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+
+
+
+
+
+
+
+    </application>
+
+</manifest>
