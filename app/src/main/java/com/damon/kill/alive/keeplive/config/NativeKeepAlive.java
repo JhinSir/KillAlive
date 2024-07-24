@@ -4,9 +4,9 @@ public class NativeKeepAlive {
 
     public static native void lockFile(String lockFile);
 
-//    public static native void nativeSetSid();
+    public static native void nativeSetSid();
 
-//    public static native void waitFileLock(String lockFile);
+    public static native void waitFileLock(String lockFile);
 
     public static native void doDaemon(String indicatorSelfPath,
                                        String indicatorDaemonPath,
@@ -16,7 +16,7 @@ public class NativeKeepAlive {
                                        String serviceName,
                                        int sdkVersion);
 
-//    public static native void test(String packageName, String serviceName, int sdkVersion);
+
 
     public void onDaemonDead() {
         IKeepAliveProcess.Fetcher.fetchStrategy().onDaemonDead();

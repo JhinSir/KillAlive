@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.Nullable
 import com.damon.kill.alive.keeplive.ServiceHolder
 import com.damon.kill.alive.utils.Logger
@@ -12,6 +13,7 @@ import com.damon.kill.alive.utils.NotificationUtil
 class NotifactionServices : KeepAliveService() {
     private val handler = Handler(Looper.getMainLooper())
     private var notificationTask: (() -> Unit)? = null
+    private var i=0
 
     @Nullable
     override fun onBind(intent: Intent?): IBinder? {
@@ -34,6 +36,9 @@ class NotifactionServices : KeepAliveService() {
             )
             NotificationUtil.showNotification(this@NotifactionServices, noti)
         }
+
+
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -56,6 +61,7 @@ class NotifactionServices : KeepAliveService() {
         super.onDestroy()
         // 在服务销毁时停止定时任务
         stopNotificationTask()
+        Log.d("xuewenwen","服务销毁----------")
     }
 
     private fun startNotificationTask() {
@@ -64,6 +70,7 @@ class NotifactionServices : KeepAliveService() {
                 {
                     task.invoke()
                     startNotificationTask()
+                    Log.d("xiucai","+++++++++++++++++${i++}")
                 },
                 5000
             )
@@ -71,6 +78,7 @@ class NotifactionServices : KeepAliveService() {
     }
 
     private fun stopNotificationTask() {
+        Log.d("xuewenwen","服务销毁-  stopNotificationTask---------")
         handler.removeCallbacksAndMessages(null)
         notificationTask = null
     }

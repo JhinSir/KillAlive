@@ -22,7 +22,7 @@ public class DamonInstrumentation extends Instrumentation {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         Logger.v(Logger.TAG, "onCreate");
-        ContextCompat.startForegroundService(getTargetContext(),
-                new Intent(getTargetContext(), DamonServices.class));
+//        ContextCompat.startForegroundService(getTargetContext(),
+//                new Intent(getTargetContext(), DamonServices.class));
     }
 }

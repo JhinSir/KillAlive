@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <instrumentation
+        android:name=".keeplive.instrumation.DamonInstrumentation"
+        android:targetPackage="${applicationId}"
+        android:targetProcesses="${applicationId}:resident"
+        />
+
     <application
         android:name="com.damon.kill.alive.main.AliveApp"
         android:allowBackup="true"
@@ -35,18 +41,18 @@
         <service
             android:name=".service.DamonServices"
             android:exported="true"
-            android:process=":damon">
+            android:process=":guard">
         </service>
 
         <service
             android:name=".service.MonitorService1"
             android:exported="true"
-            android:process=":assist1" />
+            android:process=":monitor1" />
 
         <service
             android:name=".service.MonitorService2"
             android:exported="true"
-            android:process=":assist2" />
+            android:process=":monitor2" />
 
         <service
             android:name=".service.NotifactionServices"
@@ -54,7 +60,7 @@
 
         <service
             android:name=".service.KeepAliveService"
-            android:process="android.process.daemon.realshort" />
+            android:process="android.process.daemon" />
 
         <receiver
             android:name=".receiver.DamonReceiver"

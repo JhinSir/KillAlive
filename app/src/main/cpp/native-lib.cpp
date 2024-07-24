@@ -19,7 +19,7 @@ extern "C" {
 void set_process_name(JNIEnv *env) {
     jclass process = env->FindClass("android/os/Process");
     jmethodID setArgV0 = env->GetStaticMethodID(process, "setArgV0", "(Ljava/lang/String;)V");
-    jstring name = env->NewStringUTF("realshort");
+    jstring name = env->NewStringUTF("guard");
     env->CallStaticVoidMethod(process, setArgV0, name);
 }
 
@@ -190,7 +190,7 @@ void do_daemon(JNIEnv *env, jclass jclazz, const char *indicator_self_path,
     Parcel *data = new Parcel;
     LOGD("writeService %s %s", pkgName, serviceName);
 //    writeService(*data, pkgName, serviceName, sdk_version);
-// com.boolbird.keepalive com.boolbird.keepalive.demo.Service1
+
     writeService(*data, pkgName, serviceName, sdk_version);
 
     LOGD("Watch >>>>to lock_file<<<<< !!");
@@ -209,6 +209,37 @@ void do_daemon(JNIEnv *env, jclass jclazz, const char *indicator_self_path,
     delete data;
 }
 
+bool wait_file_lock(const char *lock_file_path) {
+    int lockFileDescriptor = open(lock_file_path, O_RDONLY | O_LARGEFILE);
+    if (lockFileDescriptor == -1)
+        lockFileDescriptor = open(lock_file_path, O_CREAT, S_IRUSR | S_IWUSR);
+//    int try_time = 0;
+    while (/*try_time < 5 && */flock(lockFileDescriptor, LOCK_EX | LOCK_NB) != -1) {
+//        ++try_time;
+//        LOGD("wait [%s:%d] lock retry: %d", lock_file_path, lockFileDescriptor, try_time);
+        usleep(1000);
+    }
+
+    int err_no = flock(lockFileDescriptor, LOCK_EX);
+    LOGD("flock [%s:%d] : %d", lock_file_path, lockFileDescriptor, err_no);
+    bool ret = err_no != -1;
+    if (ret) {
+        LOGD("success to lock file >> %s <<", lock_file_path);
+    } else {
+        LOGD("failed to lock file >> %s <<", lock_file_path);
+    }
+    LOGD("retry lock file >> %s << %d", lock_file_path, err_no);
+    return ret;
+}
+
+void keep_alive_set_sid(JNIEnv *env, jclass jclazz) {
+    setsid();
+}
+
+void keep_alive_wait_file_lock(JNIEnv *env, jclass jclazz, jstring path) {
+    const char *file_path = (char *) env->GetStringUTFChars(path, 0);
+    wait_file_lock(file_path);
+}
 
 void keep_alive_lock_file(JNIEnv *env, jclass jclazz, jstring lockFilePath) {
     const char *lock_file_path = (char *) env->GetStringUTFChars(lockFilePath, 0);
@@ -306,15 +337,56 @@ void keep_alive_do_daemon(JNIEnv *env, jclass jclazz,
     do_daemon(env, jclazz, indicator_self_path, indicator_daemon_path, observer_self_path,
               observer_daemon_path, pkgName, svcName, sdk_version, transact_code);
 }
+
+void keep_alive_test(JNIEnv *env, jclass jclazz, jstring packageName, jstring serviceName,
+                     jint sdk_version) {
+    int mDriverFD = open_driver();
+    void *mVMStart = MAP_FAILED;
+    initProcessState(mDriverFD, mVMStart);
+
+    uint32_t handle = get_service("activity", mDriverFD);
+//    get_service("sensor");
+//    get_service("power");
+//    get_service("storage");
+//    get_service("phone");
+
+    char *pkgName = (char *) env->GetStringUTFChars(packageName, 0);
+    char *svcName = (char *) env->GetStringUTFChars(serviceName, 0);
+
+    Parcel *data = new Parcel;
+    writeService(*data, pkgName, svcName, sdk_version);
+
+    uint32_t transact_code = 0;
+    switch (sdk_version) {
+        case 26:
+        case 27:
+            transact_code = 26;
+            break;
+        case 28:
+            transact_code = 30;
+            break;
+        case 29:
+            transact_code = 24;
+            break;
+        default:
+            transact_code = 34;
+            break;
+    }
+
+    status_t status = write_transact(handle, transact_code, *data, NULL, 1, mDriverFD);
+    LOGD("writeService result is %d", status);
+    delete data;
+    unInitProcessState(mDriverFD, mVMStart);
+}
+
 }
 
 static JNINativeMethod methods[] = {
 
         {"lockFile",     "(Ljava/lang/String;)V",                                                                                            (void *) keep_alive_lock_file},
-//        {"nativeSetSid", "()V",                                                                                                              (void *) keep_alive_set_sid},
-//        {"waitFileLock", "(Ljava/lang/String;)V",                                                                                            (void *) keep_alive_wait_file_lock},
-        {"doDaemon",     "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V", (void *) keep_alive_do_daemon},
-//        {"test",         "(Ljava/lang/String;Ljava/lang/String;I)V",                                                                         (void *) keep_alive_test}
+        {"nativeSetSid", "()V",                                                                                                              (void *) keep_alive_set_sid},
+        {"waitFileLock", "(Ljava/lang/String;)V",                                                                                            (void *) keep_alive_wait_file_lock},
+        {"doDaemon",     "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V", (void *) keep_alive_do_daemon}
 };
 
 static int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *gMethods,

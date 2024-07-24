@@ -92,10 +92,10 @@ object DamonHolder {
         )
         // configs.ignoreBatteryOptimization()
         // configs.rebootThreshold(10 * 1000, 3)
-        configs.setOnBootReceivedListener { context, intent ->
-            Logger.d(Logger.TAG, "############################# onReceive(): intent=$intent")
-            ContextCompat.startForegroundService(context, Intent(context, DamonServices::class.java))
-        }
+//        configs.setOnBootReceivedListener { context, intent ->
+//            Logger.d(Logger.TAG, "############################# onReceive(): intent=$intent")
+//            ContextCompat.startForegroundService(context, Intent(context, DamonServices::class.java))
+//        }
         KeepAlive.init(base, configs)
     }
 }

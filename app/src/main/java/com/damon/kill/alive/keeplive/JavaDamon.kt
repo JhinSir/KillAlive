@@ -60,7 +60,7 @@ class JavaDamon private constructor() {
         env.processName = ToolsUtils.getProcessName()
 
         // 定义要启动的子进程
-        val strArr = arrayOf("damon", "monitor1", "monitor2")
+        val strArr = arrayOf("guard", "monitor1", "monitor2")
         fire(context, env, strArr)
     }
 
@@ -93,8 +93,8 @@ class JavaDamon private constructor() {
                 Logger.v(Logger.TAG, "app lock file finish")
 
                 // 创建锁定文件的数组
-                //val strArr2 = list.map { "${context.filesDir}/$it${"_d"}" }.toTypedArray()
-                //futureScheduler?.scheduleFuture(AppProcessRunnable(env, strArr2, "daemon"), 0)
+                val strArr2 = list.map { "${context.filesDir}/$it${"_d"}" }.toTypedArray()
+                futureScheduler?.scheduleFuture(AppProcessRunable(env, strArr2, "damon"), 0)
             }
         } else if (processName == context.packageName) {
             // 当前进程是主进程，启动前台服务
