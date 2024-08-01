@@ -60,7 +60,7 @@ class JavaDamon private constructor() {
         env.processName = ToolsUtils.getProcessName()
 
         // 定义要启动的子进程
-        val strArr = arrayOf("guard", "monitor1", "monitor2")
+        val strArr = arrayOf("damon", "monitor1", "monitor2")
         fire(context, env, strArr)
     }
 
@@ -99,6 +99,7 @@ class JavaDamon private constructor() {
         } else if (processName == context.packageName) {
             // 当前进程是主进程，启动前台服务
             ContextCompat.startForegroundService(context, Intent(context, DamonServices::class.java))
+
         }
     }
 }

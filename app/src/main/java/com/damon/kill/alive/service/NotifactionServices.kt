@@ -1,5 +1,6 @@
 package com.damon.kill.alive.service
 
+import android.app.Service
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
@@ -10,7 +11,7 @@ import com.damon.kill.alive.keeplive.ServiceHolder
 import com.damon.kill.alive.utils.Logger
 import com.damon.kill.alive.utils.NotificationUtil
 
-class NotifactionServices : KeepAliveService() {
+class NotifactionServices : Service() {
     private val handler = Handler(Looper.getMainLooper())
     private var notificationTask: (() -> Unit)? = null
     private var i=0

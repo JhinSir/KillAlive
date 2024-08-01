@@ -86,7 +86,7 @@ public class KeepAliveProcessImpl implements IKeepAliveProcess {
                         new File(indicatorDir, OBSERVER_PERSISTENT_FILENAME).getAbsolutePath(),
                         new File(indicatorDir, OBSERVER_DAEMON_ASSISTANT_FILENAME).getAbsolutePath(),
                         context.getPackageName(),
-                        configs.PERSISTENT_CONFIG.serviceName,
+                        configs.DAEMON_ASSISTANT_CONFIG.serviceName,
                         Build.VERSION.SDK_INT
                         /*transactCode, getNativePtr(mServiceData)*/);
             }
@@ -149,7 +149,7 @@ public class KeepAliveProcessImpl implements IKeepAliveProcess {
         }
     }
 
-    // when processName dead, we should save time to restart and kill self, don`t take a waste of time to recycle
+
     private void initServiceParcel(Context context, String serviceName) {
         Intent intent = new Intent();
         ComponentName component = new ComponentName(context.getPackageName(), serviceName);

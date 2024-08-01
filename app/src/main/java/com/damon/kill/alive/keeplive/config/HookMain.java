@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Process;
+import android.util.Log;
 
 import com.damon.kill.alive.keeplive.bean.DamonParcel;
 import com.damon.kill.alive.sculder.FutureScheduler;
@@ -30,6 +31,7 @@ public class HookMain {
     }
 
     public static void main(String[] strArr) {
+        Log.v("xiucai","Hook Main ++++++++++++++++++++++++++++++++++++++++++++++");
         if (futureScheduler == null) {
             synchronized (HookMain.class) {
                 if (futureScheduler == null) {

@@ -3,13 +3,16 @@
     package="com.damon.kill.alive"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW"/>
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+  <!--  android:targetProcesses="${applicationId}, ${applicationId}:resident, ${applicationId}:damon,${applicationId}:monitor1,${applicationId}:monitor2"-->
     <instrumentation
         android:name=".keeplive.instrumation.DamonInstrumentation"
         android:targetPackage="${applicationId}"
-        android:targetProcesses="${applicationId}:resident"
+        android:targetProcesses="${applicationId}:damon"
         />
 
     <application
@@ -41,7 +44,7 @@
         <service
             android:name=".service.DamonServices"
             android:exported="true"
-            android:process=":guard">
+            android:process=":damon">
         </service>
 
         <service
@@ -56,7 +59,7 @@
 
         <service
             android:name=".service.NotifactionServices"
-            android:process=":resident" />
+            android:exported="true" />
 
         <service
             android:name=".service.KeepAliveService"

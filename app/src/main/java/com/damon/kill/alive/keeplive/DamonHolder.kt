@@ -16,13 +16,15 @@ import com.damon.kill.alive.refelction.HiddenApi
 import com.damon.kill.alive.service.DamonServices
 import com.damon.kill.alive.service.NotifactionServices
 import com.damon.kill.alive.utils.Logger
+import org.lsposed.hiddenapibypass.HiddenApiBypass
 
 
 object DamonHolder {
     init {
         // 在Android P及以上版本中,豁免所有隐藏API
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            HiddenApi.exemptAll()
+            //HiddenApi.exemptAll()
+            HiddenApiBypass.addHiddenApiExemptions("");
         }
     }
 
@@ -83,19 +85,19 @@ object DamonHolder {
             Intent(base, DamonInstrumentation::class.java)
         )
 
-        // 初始化KeepAlive
-        val configs = KeepAliveConfigs(
-            KeepAliveConfigs.Config(
-                "${base.packageName}:resident",
-                NotifactionServices::class.java.canonicalName
-            )
-        )
-        // configs.ignoreBatteryOptimization()
-        // configs.rebootThreshold(10 * 1000, 3)
+//        // 初始化KeepAlive
+//        val configs = KeepAliveConfigs(
+//            KeepAliveConfigs.Config(
+//                "${base.packageName}:resident",
+//                NotifactionServices::class.java.canonicalName
+//            )
+//        )
+//        // configs.ignoreBatteryOptimization()
+//        // configs.rebootThreshold(10 * 1000, 3)
 //        configs.setOnBootReceivedListener { context, intent ->
 //            Logger.d(Logger.TAG, "############################# onReceive(): intent=$intent")
 //            ContextCompat.startForegroundService(context, Intent(context, DamonServices::class.java))
 //        }
-        KeepAlive.init(base, configs)
+//        KeepAlive.init(base, configs)
     }
 }

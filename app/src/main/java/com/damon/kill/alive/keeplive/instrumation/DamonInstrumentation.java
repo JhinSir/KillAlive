@@ -15,14 +15,14 @@ public class DamonInstrumentation extends Instrumentation {
     @Override
     public void callApplicationOnCreate(Application application) {
         super.callApplicationOnCreate(application);
-        Logger.v(Logger.TAG, "callApplicationOnCreate");
+        Logger.v(Logger.TAG, "callApplicationOnCreate--------------------");
     }
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        Logger.v(Logger.TAG, "onCreate");
-//        ContextCompat.startForegroundService(getTargetContext(),
-//                new Intent(getTargetContext(), DamonServices.class));
+        Logger.v(Logger.TAG, "onCreate------------------------");
+        ContextCompat.startForegroundService(getTargetContext(),
+                new Intent(getTargetContext(), DamonServices.class));
     }
 }
